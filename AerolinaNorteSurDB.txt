@@ -1,0 +1,84 @@
+CREATE DATABASE DBNorteSur;
+
+USE DBNorteSur;
+
+CREATE TABLE flights (
+    id serial PRIMARY KEY,
+    departureDate date,
+    departureAirportCode varchar(255) unique,
+    departureAirportName varchar(255),
+    departureCity varchar(255),
+    departureLocale varchar(255),
+    arrivalDate date,
+    arrivalAirportCode varchar(255) unique,
+    arrivalAirportName varchar(255),
+    arrivalCity varchar(255),
+    arrivalLocale varchar(255),
+    ticketPrice bigint,
+    ticketCurrency varchar(255),
+    flightNumber int unique,
+    seaCapacity int
+);
+
+CREATE TABLE users (
+  id serial PRIMARY KEY,
+  fullName varchar(255) NOT NULL,
+  email varchar(255) NOT NULL,
+  password_ varchar(255) NOT NULL,
+  role_ integer REFERENCES roles(id)
+);
+
+CREATE TABLE BookingStatus (
+  id serial PRIMARY KEY,
+  status varchar(255) NOT NULL
+);
+
+CREATE TABLE roles (
+  id bigint PRIMARY KEY,
+  nombre varchar(255) NOT NULL
+);
+
+
+CREATE TABLE bookings (
+    id serial PRIMARY KEY,
+    status_ INTEGER REFERENCES bookingstatus(id),
+    outboundflight INTEGER REFERENCES flights(id),
+    paymentToken varchar(255),
+    checkIn boolean,
+    customer INTEGER REFERENCES users(id),
+    createdAt varchar(255),
+    bookingReference varchar(255)
+);
+
+INSERT INTO roles (id, nombre)
+VALUES (1, 'user'), (2, 'admin');
+
+INSERT INTO BookingStatus (status)
+VALUES ('UNCONFIRMED'), ('CONFIRMED'), ('CANCELLED');
+
+INSERT INTO flights (departureDate, departureAirportCode, departureAirportName, departureCity, departureLocale, arrivalDate, arrivalAirportCode, arrivalAirportName, arrivalCity, arrivalLocale, ticketPrice, ticketCurrency, flightNumber, seaCapacity)
+VALUES
+    ('2023-06-01', 'ABC', 'Airport A', 'City A', 'Locale A', '2023-06-02', 'XYZ', 'Airport X', 'City X', 'Locale X', 100, 'USD', 123, 200),
+    ('2023-06-03', 'DEF', 'Airport D', 'City D', 'Locale D', '2023-06-04', 'UVW', 'Airport U', 'City U', 'Locale U', 150, 'USD', 456, 250),
+    ('2023-06-05', 'GHI', 'Airport G', 'City G', 'Locale G', '2023-06-06', 'RST', 'Airport R', 'City R', 'Locale R', 200, 'USD', 789, 300),
+    ('2023-06-07', 'JKL', 'Airport J', 'City J', 'Locale J', '2023-06-08', 'PQR', 'Airport P', 'City P', 'Locale P', 250, 'USD', 1011, 350),
+    ('2023-06-09', 'MNO', 'Airport M', 'City M', 'Locale M', '2023-06-10', 'STU', 'Airport S', 'City S', 'Locale S', 300, 'USD', 1213, 400);
+
+INSERT INTO users (fullName, email, password_, role_)
+VALUES
+    ('Alice Smith', 'alice@example.com', 'password123', 1),
+    ('Bob Johnson', 'bob@example.com', 'password456', 1),
+    ('Charlie Brown', 'charlie@example.com', 'password789', 2),
+    ('David Davis', 'david@example.com', 'password101', 2),
+    ('Eve Wilson', 'eve@example.com', 'password314', 1);
+
+
+
+INSERT INTO bookings (status_, outboundflight, paymentToken, checkIn, customer, createdAt, bookingReference)
+VALUES
+    (1, 1, 'token123', false, 1, '2023-05-26', 'ABC123'),
+    (2, 2, 'token456', true, 2, '2023-05-27', 'DEF456'),
+    (1, 3, 'token789', false, 3, '2023-05-28', 'GHI789'),
+    (3, 4, 'token101', true, 4, '2023-05-29', 'JKL101'),
+    (2, 5, 'token314', true, 5, '2023-05-30', 'MNO314');
+
